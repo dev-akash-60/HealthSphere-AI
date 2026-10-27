@@ -15,13 +15,13 @@ BASE_DIR = os.path.dirname(
 
 MODEL_PATH = os.path.join(
     BASE_DIR,
-    "Models",
+    "models",
     "disease_prediction_model.pkl"
 )
 
 FEATURES_PATH = os.path.join(
     BASE_DIR,
-    "Models",
+    "models",
     "disease_features.pkl"
 )
 
