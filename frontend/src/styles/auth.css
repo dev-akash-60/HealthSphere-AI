@@ -1,0 +1,630 @@
+.auth-page {
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(0, 217, 255, .18),
+            transparent 35%),
+
+        radial-gradient(circle at bottom right,
+            rgba(255, 0, 255, .15),
+            transparent 35%),
+
+        #050816;
+
+    overflow: hidden;
+
+}
+
+
+
+/* ================= CARD ================= */
+
+
+.cyber-card {
+
+    position: relative;
+
+    width: 430px;
+
+    min-height: 560px;
+
+    border-radius: 28px;
+
+    padding: 3px;
+
+    overflow: hidden;
+
+    background: #050816;
+
+}
+
+
+
+/* DARK BASE BORDER */
+
+.cyber-card::before {
+
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 28px;
+
+    border: 3px solid rgba(255, 255, 255, .08);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+
+}
+
+
+
+/* ================= FIRST MOVING GLOW ================= */
+
+
+.glow-border {
+
+
+    position: absolute;
+
+
+    width: 160%;
+
+    height: 160%;
+
+
+    top: -30%;
+
+    left: -30%;
+
+
+
+    background:
+
+        conic-gradient(transparent 0deg,
+
+            transparent 250deg,
+
+            #00d9ff 290deg,
+
+            #0066ff 310deg,
+
+            #8b5cf6 330deg,
+
+            #ff00ff 350deg,
+
+            transparent 360deg);
+
+
+    animation:
+
+        rotateOne 4s linear infinite;
+
+
+}
+
+
+
+/* SECOND MOVING LIGHT */
+
+
+.glow-border::after {
+
+
+    content: "";
+
+
+    position: absolute;
+
+
+    inset: 0;
+
+
+
+    background:
+
+        conic-gradient(transparent 0deg,
+
+            transparent 70deg,
+
+            #ff00ff 120deg,
+
+            #8b5cf6 150deg,
+
+            #00d9ff 180deg,
+
+            transparent 220deg);
+
+
+
+    animation:
+
+        rotateGlow 4s linear infinite reverse;
+
+
+
+}
+
+
+
+
+
+/* INNER MASK */
+
+
+.cyber-card::after {
+
+
+    content: "";
+
+
+    position: absolute;
+
+
+    inset: 4px;
+
+
+    border-radius: 24px;
+
+
+    background:
+
+        linear-gradient(145deg,
+
+            rgba(15, 23, 42, .95),
+
+            rgba(11, 16, 32, .95));
+
+
+    z-index: 1;
+
+
+}
+
+
+
+/* ================= CONTENT ================= */
+
+
+.auth-content {
+
+
+    position: relative;
+
+    z-index: 5;
+
+    padding: 40px;
+
+
+    color: white;
+
+}
+
+
+
+
+/* BRAND */
+
+
+.brand-logo {
+
+
+    text-align: center;
+
+    margin-bottom: 35px;
+
+}
+
+
+
+.brand-logo h2 {
+
+
+    font-size: 32px;
+
+
+    letter-spacing: 2px;
+
+
+    background:
+
+        linear-gradient(90deg,
+
+            #00d9ff,
+
+            #8b5cf6,
+
+            #ff00ff);
+
+
+    
+
+    color: transparent;
+
+
+}
+
+
+
+.brand-logo span {
+
+
+    display: block;
+
+
+    margin-top: 8px;
+
+
+    color: #94a3b8;
+
+
+    font-size: 13px;
+
+
+    letter-spacing: 3px;
+
+
+}
+
+
+
+
+
+.auth-content h1 {
+
+
+    text-align: center;
+
+    font-size: 28px;
+
+    margin-bottom: 10px;
+
+
+}
+
+
+
+.subtitle {
+
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    margin-bottom: 30px;
+
+
+}
+
+
+
+
+
+/* INPUT */
+
+
+.auth-content input {
+
+
+    width: 100%;
+
+
+    padding: 15px 18px;
+
+
+    margin-bottom: 18px;
+
+
+    border-radius: 14px;
+
+
+    background:
+
+        rgba(255, 255, 255, .06);
+
+
+    border:
+
+        1px solid rgba(255, 255, 255, .12);
+
+
+    color: white;
+
+
+    outline: none;
+
+
+}
+
+
+
+.auth-content input:focus {
+
+
+    border-color: #00d9ff;
+
+
+    box-shadow:
+
+        0 0 20px rgba(0, 217, 255, .5);
+
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+.auth-btn {
+
+
+    width: 100%;
+
+
+    padding: 15px;
+
+
+    border: none;
+
+
+    border-radius: 14px;
+
+
+
+    background:
+
+
+        linear-gradient(90deg,
+
+            #00d9ff,
+
+            #8b5cf6,
+
+            #ff00ff);
+
+
+
+    font-weight: 800;
+
+
+    cursor: pointer;
+
+
+    transition: .3s;
+
+
+}
+
+
+
+.auth-btn:hover {
+
+
+    transform: translateY(-3px);
+
+
+    box-shadow:
+
+
+        0 0 30px rgba(0, 217, 255, .8);
+
+
+}
+
+
+
+
+
+.switch-text {
+
+
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #94a3b8;
+
+
+}
+
+
+
+.switch-text a {
+
+
+    margin-left: 8px;
+
+    color: #00d9ff;
+
+    text-decoration: none;
+
+}
+
+
+
+
+
+/* ================= ANIMATION ================= */
+
+
+@keyframes rotateOne {
+
+
+    from {
+
+        transform: rotate(0deg);
+
+    }
+
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+
+}
+
+
+
+
+@keyframes rotateTwo {
+
+
+    from {
+
+        transform: rotate(0deg);
+
+    }
+
+
+    to {
+
+        transform: rotate(360deg);
+
+    }
+
+
+}
+.link-button {
+
+    background: none;
+
+    border: none;
+
+    color: #00d9ff;
+
+    cursor: pointer;
+
+    margin-left: 8px;
+
+    font-size: inherit;
+
+}
+
+
+.link-button:hover {
+
+    text-shadow:
+        0 0 10px #00d9ff;
+
+}
+@media (max-width: 480px) {
+
+    .auth-page {
+        min-height: 100dvh;
+
+        padding: 16px;
+    }
+
+
+    .cyber-card {
+        width: 100%;
+
+        min-height: auto;
+
+        border-radius: 22px;
+    }
+
+
+    .cyber-card::before {
+        border-radius: 22px;
+
+        border-width: 2px;
+    }
+
+
+    .cyber-card::after {
+        inset: 3px;
+
+        border-radius: 19px;
+    }
+
+
+    .auth-content {
+        padding: 30px 22px;
+    }
+
+
+    .brand-logo {
+        margin-bottom: 24px;
+    }
+
+
+    .brand-logo h2 {
+        font-size: 26px;
+
+        letter-spacing: 1.5px;
+    }
+
+
+    .brand-logo span {
+        font-size: 11px;
+
+        letter-spacing: 2px;
+    }
+
+
+    .auth-content h1 {
+        font-size: 24px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .subtitle {
+        font-size: 14px;
+
+        margin-bottom: 24px;
+    }
+
+
+    .auth-content input {
+        padding: 14px 15px;
+
+        font-size: 14px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .auth-btn {
+        min-height: 48px;
+
+        padding: 13px;
+
+        font-size: 14px;
+    }
+
+
+    .switch-text {
+        margin-top: 20px;
+
+        font-size: 13px;
+    }
+
+
+    .glow-border {
+        width: 180%;
+
+        height: 180%;
+
+        top: -40%;
+
+        left: -40%;
+    }
+}

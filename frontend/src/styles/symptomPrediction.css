@@ -1,0 +1,295 @@
+.prediction-page {
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: #0f172a;
+    color: white;
+}
+
+.prediction-container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.prediction-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #1e293b;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.prediction-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.prediction-icon {
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background: #075985;
+}
+
+.prediction-title h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.prediction-title p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+}
+
+/* Main result */
+
+.main-result-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    margin-bottom: 25px;
+}
+
+.result-icon {
+    color: #22c55e;
+}
+
+.result-label {
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.main-result-card h2 {
+    margin: 0;
+    font-size: 36px;
+    color: #38bdf8;
+}
+
+.confidence {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px 16px;
+    background: #0f172a;
+    border-radius: 10px;
+}
+
+.confidence span {
+    color: #94a3b8;
+}
+
+.confidence strong {
+    color: #22c55e;
+}
+
+/* Cards */
+
+.predictions-card,
+.symptoms-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.card-heading svg {
+    color: #38bdf8;
+}
+
+.card-heading h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+/* Predictions */
+
+.prediction-row {
+    padding: 15px 0;
+    border-bottom: 1px solid #334155;
+}
+
+.prediction-row:last-child {
+    border-bottom: none;
+}
+
+.prediction-name {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.rank {
+    color: #38bdf8;
+    font-weight: bold;
+}
+
+.probability-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.probability-bar {
+    flex: 1;
+    height: 8px;
+    background: #334155;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.probability-fill {
+    height: 100%;
+    background: #0ea5e9;
+    border-radius: 10px;
+}
+
+.probability-container strong {
+    width: 65px;
+    text-align: right;
+}
+
+/* Symptoms */
+
+.symptoms-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.symptom-tag {
+    padding: 8px 12px;
+    background: #075985;
+    border: 1px solid #0284c7;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* Disclaimer */
+
+.medical-disclaimer {
+    display: flex;
+    gap: 15px;
+    padding: 18px;
+    margin-bottom: 25px;
+    background: #451a03;
+    border: 1px solid #f97316;
+    border-radius: 15px;
+    color: #fed7aa;
+}
+
+.medical-disclaimer svg {
+    flex-shrink: 0;
+}
+
+.medical-disclaimer strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.medical-disclaimer p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Buttons */
+
+.new-prediction-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #0284c7;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.new-prediction-button:hover {
+    background: #0369a1;
+}
+
+/* Empty state */
+
+.prediction-empty {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.prediction-empty svg {
+    color: #f97316;
+}
+
+.prediction-empty h2 {
+    margin-bottom: 5px;
+}
+
+.prediction-empty p {
+    color: #94a3b8;
+}
+
+.prediction-empty button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #0284c7;
+    color: white;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+    .prediction-page {
+        padding: 25px 15px;
+    }
+
+    .prediction-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .main-result-card h2 {
+        font-size: 28px;
+    }
+
+    .probability-container {
+        gap: 8px;
+    }
+}

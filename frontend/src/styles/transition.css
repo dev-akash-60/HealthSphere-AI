@@ -1,0 +1,75 @@
+.page-transition {
+    min-height: 100vh;
+}
+
+/* Overlay */
+
+.transition-overlay {
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 99999;
+
+    overflow: hidden;
+
+    backdrop-filter: blur(20px);
+
+    background: rgba(2, 6, 23, .45);
+
+    pointer-events: none;
+
+}
+
+/* Expanding Glow */
+
+.energy-circle {
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(0, 217, 255, .95),
+            rgba(99, 102, 241, .7),
+            rgba(236, 72, 153, .25),
+            transparent 70%);
+
+    filter: blur(18px);
+
+}
+
+/* Neon Sweep */
+
+.energy-wave {
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(120deg,
+
+            transparent,
+
+            rgba(0, 217, 255, .15),
+
+            rgba(168, 85, 247, .35),
+
+            rgba(255, 0, 255, .18),
+
+            transparent);
+
+    filter: blur(35px);
+
+}

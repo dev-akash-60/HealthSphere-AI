@@ -1,0 +1,43 @@
+/* ================= GLOBAL ================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body,
+#root {
+
+    min-height: 100%;
+
+    width: 100%;
+
+    overflow-x: hidden;
+
+    overflow-y: auto;
+
+}
+
+
+body {
+
+    background: #020617;
+
+}
+/* Hide scrollbar but keep scrolling */
+
+html {
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+html::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Edge, Safari */
+}
+
+
+body {
+    overflow-y: auto;
+}
