@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import "../styles/XrayAnalysis.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const XrayAnalysis = () => {
@@ -94,8 +95,11 @@ const XrayAnalysis = () => {
 
 
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/xray/predict",
-                formData
+                `${API_URL}/api/xray/predict`,
+                formData,
+                {
+                    timeout: 120000,
+                }
             );
 
 

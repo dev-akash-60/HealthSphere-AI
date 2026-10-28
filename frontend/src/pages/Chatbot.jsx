@@ -19,8 +19,11 @@ import ReactMarkdown from "react-markdown";
 import pcmProcessorUrl from "../services/pcm-processor.js?url";
 import "../styles/chatbot.css";
 
-const API_URL = "http://127.0.0.1:8000";
-const VOICE_URL = "ws://127.0.0.1:8000/chatbot/voice";
+const API_URL = (
+    import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"
+).replace(/\/+$/, "");
+
+const VOICE_URL = `${API_URL.replace(/^http/, "ws")}/chatbot/voice`;
 
 const INITIAL_MESSAGE = {
     id: "welcome-message",
