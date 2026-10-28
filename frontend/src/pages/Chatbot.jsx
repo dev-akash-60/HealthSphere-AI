@@ -23,7 +23,7 @@ const API_URL = (
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
 ).replace(/\/+$/, "");
 
-const VOICE_URL = `${VITE_API_URL.replace(/^http/, "ws")}/chatbot/voice`;
+const VOICE_URL = `${API_URL.replace(/^http:/, "ws:").replace(/^https:/, "wss:")}/chatbot/voice`;
 
 const INITIAL_MESSAGE = {
     id: "welcome-message",
