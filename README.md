@@ -150,7 +150,7 @@ Install the following tools before running the project:
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/dev-akash-60/HealthSphere-AI.git
 cd HealthSphere-AI
 ```
 
@@ -200,10 +200,10 @@ Start the backend using the entry point configured in your project. For example,
 python app.py
 ```
 
-For FastAPI, if your entry point is `app.py` and it exports an `app` object:
+For FastAPI, if your entry point is `Main.py` and it exports an `app` object:
 
 ```bash
-uvicorn app:app --reload
+uvicorn main:app --reload  
 ```
 
 Use the command appropriate to your actual backend implementation.
