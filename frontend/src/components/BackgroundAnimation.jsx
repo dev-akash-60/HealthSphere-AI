@@ -1,38 +1,55 @@
+
 import { motion } from "framer-motion";
 
-function BackgroundAnimation() {
-    const particles = Array.from({ length: 20 });
-
+const BackgroundAnimation = () => {
     return (
-        <div className="background-animation">
-            <div className="glow glow-one"></div>
-            <div className="glow glow-two"></div>
+        <div className="animated-background">
+            {/* Glowing orbs */}
+            <motion.div
+                className="glow-orb orb-one"
+                animate={{
+                    x: [0, 70, -30, 0],
+                    y: [0, -50, 40, 0],
+                    scale: [1, 1.15, 0.9, 1]
+                }}
+                transition={{
+                    duration: 12,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+            />
 
-            {particles.map((_, index) => (
-                <motion.span
-                    key={index}
-                    className="particle"
-                    initial={{
-                        opacity: 0,
-                        y: 0,
-                    }}
-                    animate={{
-                        opacity: [0, 1, 0],
-                        y: [-20, -120],
-                    }}
-                    transition={{
-                        duration: 4 + Math.random() * 4,
-                        repeat: Infinity,
-                        delay: Math.random() * 5,
-                    }}
-                    style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                    }}
-                />
-            ))}
+            <motion.div
+                className="glow-orb orb-two"
+                animate={{
+                    x: [0, -60, 30, 0],
+                    y: [0, 50, -40, 0],
+                    scale: [1, 0.85, 1.2, 1]
+                }}
+                transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+            />
+
+            <motion.div
+                className="glow-orb orb-three"
+                animate={{
+                    y: [0, -70, 0],
+                    x: [0, 40, 0]
+                }}
+                transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+            />
+
+            {/* Grid overlay */}
+            <div className="background-grid" />
         </div>
     );
-}
+};
 
 export default BackgroundAnimation;

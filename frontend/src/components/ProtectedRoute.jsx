@@ -1,14 +1,30 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute() {
+    const { user, authLoading } = useAuth();
+    const location = useLocation();
 
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-    if (!isLoggedIn) {
-        return <Navigate to="/login" replace />;
+    if (authLoading) {
+        return (
+            <div className="auth-loading">
+                <div className="auth-spinner"></div>
+                <p>Verifying your session...</p>
+            </div>
+        );
     }
 
-    return children;
+    if (!user) {
+        return (
+            <Navigate
+                to="/login"
+                replace
+                state={{ from: location }}
+            />
+        );
+    }
+
+    return <Outlet />;
 }
 
 export default ProtectedRoute;

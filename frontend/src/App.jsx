@@ -1,17 +1,22 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 
-// =====================================================
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    useLocation
+} from "react-router-dom";
+
+import {
+    AnimatePresence
+} from "framer-motion";
+
 // PAGES
-// =====================================================
-
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Symptoms from "./pages/Symptoms";
 import SymptomPrediction from "./pages/SymptomPrediction";
-
 import ReportAnalysis from "./pages/ReportAnalysis";
 import SkinDisease from "./pages/SkinDisease";
 import XrayAnalysis from "./pages/XrayAnalysis";
@@ -22,224 +27,118 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
-// =====================================================
 // COMPONENTS
-// =====================================================
-
 import PageTransition from "./components/PageTransition";
+import ProtectedRoute from "./components/ProtectedRoute";
 
+// CONTEXT
+import { AuthProvider } from "./context/AuthContext";
 
-// =====================================================
-// ANIMATED ROUTES
-// =====================================================
 
 function AnimatedRoutes() {
-
     const location = useLocation();
 
     return (
-
         <AnimatePresence mode="wait">
+            <PageTransition key={location.pathname}>
+                <Routes location={location}>
+                    {/* PUBLIC ROUTES */}
 
-            <Routes
-                location={location}
-                key={location.pathname}
-            >
+                    <Route
+                        path="/"
+                        element={<LandingPage />}
+                    />
 
-                {/* =================================================
-                    LANDING PAGE
-                ================================================= */}
+                    <Route
+                        path="/login"
+                        element={<Login />}
+                    />
 
-                <Route
-                    path="/"
-                    element={
-                        <LandingPage />
-                    }
-                />
+                    <Route
+                        path="/register"
+                        element={<Register />}
+                    />
 
+                    {/* PROTECTED ROUTES */}
 
-                {/* =================================================
-                    AUTHENTICATION
-                ================================================= */}
+                    <Route element={<ProtectedRoute />}>
+                        <Route
+                            path="/dashboard"
+                            element={<Dashboard />}
+                        />
 
-                <Route
-                    path="/login"
-                    element={
-                        <PageTransition>
-                            <Login />
-                        </PageTransition>
-                    }
-                />
+                        <Route
+                            path="/symptoms"
+                            element={<Symptoms />}
+                        />
 
-                <Route
-                    path="/register"
-                    element={
-                        <PageTransition>
-                            <Register />
-                        </PageTransition>
-                    }
-                />
+                        <Route
+                            path="/symptom-prediction"
+                            element={<SymptomPrediction />}
+                        />
 
+                        <Route
+                            path="/report-analysis"
+                            element={<ReportAnalysis />}
+                        />
 
-                {/* =================================================
-                    DASHBOARD
-                ================================================= */}
+                        <Route
+                            path="/skin-disease"
+                            element={<SkinDisease />}
+                        />
 
-                <Route
-                    path="/dashboard"
-                    element={
-                        <Dashboard />
-                    }
-                />
+                        <Route
+                            path="/xray-analysis"
+                            element={<XrayAnalysis />}
+                        />
 
+                        <Route
+                            path="/chatbot"
+                            element={<Chatbot />}
+                        />
 
-                {/* =================================================
-                    DISEASE PREDICTION
-                ================================================= */}
-                <Route
-                    path="/symptoms"
-                    element={<Symptoms />}
-                />
+                        <Route
+                            path="/medicine"
+                            element={<MedicineRecommendation />}
+                        />
 
-                <Route
-                    path="/symptom-prediction"
-                    element={
-                        <SymptomPrediction />
-                    }
-                />
+                        <Route
+                            path="/doctor"
+                            element={<DoctorRecommendation />}
+                        />
 
+                        <Route
+                            path="/profile"
+                            element={<Profile />}
+                        />
 
-                {/* =================================================
-                    MEDICAL REPORT ANALYSIS
-                ================================================= */}
+                        <Route
+                            path="/settings"
+                            element={<Settings />}
+                        />
+                    </Route>
 
-                <Route
-                    path="/report-analysis"
-                    element={
-                        <ReportAnalysis />
-                    }
-                />
+                    {/* 404 */}
 
-
-                {/* =================================================
-                    SKIN DISEASE
-                ================================================= */}
-
-                <Route
-                    path="/skin-disease"
-                    element={
-                        <SkinDisease />
-                    }
-                />
-
-
-                {/* =================================================
-                    X-RAY ANALYSIS
-                ================================================= */}
-
-                <Route
-                    path="/xray-analysis"
-                    element={
-                        <XrayAnalysis />
-                    }
-                />
-
-
-                {/* =================================================
-                    AI CHATBOT
-                ================================================= */}
-
-                <Route
-                    path="/chatbot"
-                    element={
-                        <Chatbot />
-                    }
-                />
-
-
-                {/* =================================================
-                    MEDICINE RECOMMENDATION
-                ================================================= */}
-
-                <Route
-                    path="/medicine"
-                    element={
-                        <MedicineRecommendation />
-                    }
-                />
-
-
-                {/* =================================================
-                    DOCTOR RECOMMENDATION
-                ================================================= */}
-
-                <Route
-                    path="/doctor"
-                    element={
-                        <DoctorRecommendation />
-                    }
-                />
-
-
-                {/* =================================================
-                    USER PROFILE
-                ================================================= */}
-
-                <Route
-                    path="/profile"
-                    element={
-                        <Profile />
-                    }
-                />
-
-
-                {/* =================================================
-                    SETTINGS
-                ================================================= */}
-
-                <Route
-                    path="/settings"
-                    element={
-                        <Settings />
-                    }
-                />
-
-
-                {/* =================================================
-                    404
-                ================================================= */}
-
-                <Route
-                    path="*"
-                    element={
-                        <NotFound />
-                    }
-                />
-
-            </Routes>
-
+                    <Route
+                        path="*"
+                        element={<NotFound />}
+                    />
+                </Routes>
+            </PageTransition>
         </AnimatePresence>
-
     );
 }
 
-
-// =====================================================
-// APP
-// =====================================================
 
 function App() {
-
     return (
-
-        <BrowserRouter>
-
-            <AnimatedRoutes />
-
-        </BrowserRouter>
-
+        <AuthProvider>
+            <BrowserRouter>
+                <AnimatedRoutes />
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
-
 
 export default App;

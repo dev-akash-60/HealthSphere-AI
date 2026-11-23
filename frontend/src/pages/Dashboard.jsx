@@ -197,7 +197,7 @@ function Dashboard() {
                         aria-label="Open profile"
                     >
                         <span className="profile-avatar">
-                            <UserRound size={19} />
+                            <UserRound size={25} />
                         </span>
                         <span className="profile-button-text">My Profile</span>
                         <ArrowUpRight size={15} className="profile-arrow" />
@@ -269,7 +269,7 @@ function Dashboard() {
                 <div className="hero-visual">
                     <div className="visual-top-label">
                         <span className="visual-live-dot" />
-                        HEALTHSPHERE CORE
+                        HEALTHSPHERE AI
                     </div>
 
                     <div className="orbit-scene">
@@ -290,7 +290,7 @@ function Dashboard() {
                         <div className="core-glow" />
                         <div className="core-circle">
                             <div className="core-circle-inner">
-                                <HeartPulse size={47} strokeWidth={1.6} />
+                                <HeartPulse size={50} strokeWidth={1.6} />
                             </div>
                         </div>
                     </div>

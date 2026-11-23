@@ -1,6 +1,7 @@
 
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import api from "../services/api";
+
 import {
     Upload,
     X,
@@ -9,778 +10,888 @@ import {
     ShieldCheck,
     AlertTriangle,
     Loader2,
+    LoaderPinwheel,
+    BoneFracture,
+    ScanEye,
     Activity,
-    Bone
+    Bone,
+    RefreshCw,
+    CheckCircle2,
+    XCircle,
+    Info,
 } from "lucide-react";
 
 import "../styles/XrayAnalysis.css";
-const API_URL = import.meta.env.VITE_API_URL;
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+const ALLOWED_TYPES = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+];
+
+const normalizeLabel = (value) =>
+    String(value ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s-]+/g, "_");
+
+const FRACTURE_POSITIVE_LABELS = [
+    "fractured",
+    "fracture",
+    "fracture_detected",
+    "fracture_present",
+    "positive",
+];
+
+const FRACTURE_NEGATIVE_LABELS = [
+    "not_fractured",
+    "non_fractured",
+    "no_fracture",
+    "no_fractures",
+    "no_fracture_detected",
+    "not_fracture",
+    "healthy",
+    "normal",
+    "negative",
+    "no",
+];
+
+const XRAY_POSITIVE_LABELS = [
+    "xray",
+    "x_ray",
+    "is_xray",
+    "is_x_ray",
+    "valid_xray",
+    "valid_x_ray",
+    "positive",
+    "yes",
+];
+
+const XRAY_NEGATIVE_LABELS = [
+    "not_xray",
+    "non_xray",
+    "not_x_ray",
+    "non_x_ray",
+    "invalid_xray",
+    "invalid_x_ray",
+    "negative",
+    "no",
+];
+
+const parseFracturePrediction = (value) => {
+    const label = normalizeLabel(value);
+
+    // Check negative labels first.
+    // "not_fractured" must never become a positive result.
+    if (FRACTURE_NEGATIVE_LABELS.includes(label)) {
+        return false;
+    }
+
+    if (FRACTURE_POSITIVE_LABELS.includes(label)) {
+        return true;
+    }
+
+    return null;
+};
+
+const parseXrayPrediction = (value) => {
+    const label = normalizeLabel(value);
+
+    if (XRAY_NEGATIVE_LABELS.includes(label)) {
+        return false;
+    }
+
+    if (XRAY_POSITIVE_LABELS.includes(label)) {
+        return true;
+    }
+
+    return null;
+};
+
+// Supports confidence values in either decimal or percentage format.
+const getPercentage = (value) => {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+        return null;
+    }
+
+    return Math.min(
+        100,
+        Math.max(0, number > 1 ? number : number * 100)
+    );
+};
+
+const formatConfidence = (value) => {
+    const percentage = getPercentage(value);
+
+    return percentage === null
+        ? "Not available"
+        : `${percentage.toFixed(2)}%`;
+};
+
+// Normalize the two-model backend response.
+const normalizeResult = (data) => {
+    const response = data?.result ?? data;
+
+    if (!response || typeof response !== "object") {
+        return null;
+    }
+
+    // MODEL 1: X-ray classification.
+    let isXray = null;
+
+    if (typeof response.is_xray === "boolean") {
+        isXray = response.is_xray;
+    } else if (typeof response.is_xray === "string") {
+        isXray = parseXrayPrediction(response.is_xray);
+    }
+
+    if (isXray === null) {
+        const xrayLabel =
+            response.xray_prediction ??
+            response.xray_class ??
+            response.xray_status;
+
+        isXray = parseXrayPrediction(xrayLabel);
+    }
+
+    // MODEL 2: Fracture classification.
+    const fractureLabel =
+        response.fracture_prediction ??
+        response.fracture_class ??
+        response.prediction;
+
+    const isFractured = parseFracturePrediction(fractureLabel);
+
+    return {
+        raw: response,
+        isXray,
+        isFractured,
+        xrayConfidence:
+            response.xray_confidence ??
+            response.xray_probability ??
+            response.xray_score ??
+            null,
+        fractureConfidence:
+            response.fracture_confidence ??
+            response.fracture_probability ??
+            response.fracture_score ??
+            null,
+        fractureLabel,
+    };
+};
 
 const XrayAnalysis = () => {
-
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [isDragging, setIsDragging] = useState(false);
 
+    const fileInputRef = useRef(null);
+    const previewUrlRef = useRef(null);
 
-    // =====================================================
-    // FILE SELECT
-    // =====================================================
+    // Release the previous image preview URL.
+    const clearPreviewUrl = () => {
+        if (previewUrlRef.current) {
+            URL.revokeObjectURL(previewUrlRef.current);
+            previewUrlRef.current = null;
+        }
+    };
 
-    const handleFileChange = (e) => {
+    // Validate and select an image.
+    const selectFile = (selectedFile) => {
+        if (!selectedFile) return;
 
-        const selectedFile = e.target.files[0];
+        const isValidType =
+            ALLOWED_TYPES.includes(selectedFile.type) ||
+            /\.(jpe?g|png|webp)$/i.test(selectedFile.name);
 
-        if (!selectedFile) {
+        if (!isValidType) {
+            setError("Please upload a JPG, JPEG, PNG, or WEBP image.");
             return;
         }
 
+        if (selectedFile.size > MAX_FILE_SIZE) {
+            setError("Image size must be less than 10 MB.");
+            return;
+        }
+
+        if (selectedFile.size === 0) {
+            setError("The selected image is empty.");
+            return;
+        }
+
+        clearPreviewUrl();
+
+        const imageUrl = URL.createObjectURL(selectedFile);
+
+        previewUrlRef.current = imageUrl;
+
         setFile(selectedFile);
-
-        setPreview(
-            URL.createObjectURL(selectedFile)
-        );
-
+        setPreview(imageUrl);
         setResult(null);
         setError("");
     };
 
+    // File input handler.
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files?.[0];
 
-    // =====================================================
-    // REMOVE FILE
-    // =====================================================
+        selectFile(selectedFile);
 
+        event.target.value = "";
+    };
+
+    // Drag and drop handlers.
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!loading) {
+            setIsDragging(true);
+        }
+    };
+
+    const handleDragLeave = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsDragging(false);
+        }
+    };
+
+    const handleDrop = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        setIsDragging(false);
+
+        if (loading) return;
+
+        const droppedFile = event.dataTransfer.files?.[0];
+
+        if (droppedFile) {
+            selectFile(droppedFile);
+        }
+    };
+
+    // Remove selected image.
     const handleRemove = () => {
+        if (loading) return;
+
+        clearPreviewUrl();
 
         setFile(null);
         setPreview(null);
         setResult(null);
         setError("");
+        setIsDragging(false);
 
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
-
-    // =====================================================
-    // ANALYZE X-RAY
-    // =====================================================
-
+    // Analyze uploaded X-ray using both backend models.
     const handleAnalyze = async () => {
-
         if (!file) {
-
-            setError(
-                "Please upload an image first."
-            );
-
+            setError("Please upload an X-ray image first.");
             return;
         }
 
-
-        setLoading(true);
-        setError("");
-        setResult(null);
-
-
         try {
+            setLoading(true);
+            setError("");
+            setResult(null);
 
             const formData = new FormData();
+            formData.append("file", file);
 
-            formData.append(
-                "file",
-                file
-            );
-
-
-            const response = await axios.post(
-                `${API_URL}/api/xray/predict`,
+            const response = await api.post(
+                "/api/xray/predict",
                 formData,
                 {
                     timeout: 180000,
                 }
             );
 
+            const normalized = normalizeResult(response.data);
 
-            setResult(
-                response.data
-            );
+            if (!normalized) {
+                throw new Error(
+                    "The backend returned an invalid response."
+                );
+            }
 
-
+            setResult(normalized);
         } catch (err) {
+            console.error("X-ray analysis error:", err);
 
-            console.error(
-                "X-Ray analysis error:",
-                err
-            );
-
+            const message =
+                err.response?.data?.detail ||
+                err.response?.data?.message ||
+                err.message ||
+                "Something went wrong while analyzing the X-ray.";
 
             setError(
-                err.response?.data?.detail ||
-                "Failed to analyze the image."
+                typeof message === "string"
+                    ? message
+                    : "Unable to analyze this image. Please try again."
             );
-
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-
-    // =====================================================
-    // ANALYZE AGAIN
-    // =====================================================
-
+    // Start a fresh analysis without removing the image.
     const handleAnalyzeAgain = () => {
-
         setResult(null);
         setError("");
-
     };
 
-
-    // =====================================================
-    // RENDER
-    // =====================================================
+    // Release preview URL when component unmounts.
+    useEffect(() => {
+        return () => {
+            if (previewUrlRef.current) {
+                URL.revokeObjectURL(previewUrlRef.current);
+            }
+        };
+    }, []);
 
     return (
-
         <div className="xray-page">
 
-            {/* =================================================
-                BACKGROUND GLOW
-            ================================================= */}
+           
 
-            <div className="xray-glow glow-one"></div>
-
-            <div className="xray-glow glow-two"></div>
-
-
-            {/* =================================================
-                HEADER
-            ================================================= */}
-
+            {/* PAGE HEADER */}
             <div className="xray-header">
-
-                <div className="header-icon">
-
-                    <ScanLine
-                        size={32}
-                    />
-
+                <div className="xray-header-icon">
+                    <Bone size={28} />
                 </div>
-
 
                 <div>
+                    <span className="xray-header-label">
+                        AI HEALTHCARE ANALYSIS
+                    </span>
 
-                    <div className="header-label">
-
-                        <Activity
-                            size={13}
-                        />
-
-                        AI X-RAY ANALYSIS
-
-                    </div>
-
-
-                    <h1>
-                        X-Ray Analysis
-                    </h1>
-
+                    <h1>X-Ray Analysis</h1>
 
                     <p>
-                        AI-powered X-ray validation and
-                        fracture detection.
+                        Two-stage AI analysis for X-ray validation
+                        and bone fracture detection.
                     </p>
-
                 </div>
-
             </div>
 
+            <div className="xray-content">
 
-            {/* =================================================
-                MAIN CARD
-            ================================================= */}
+                {/* UPLOAD SECTION */}
+                <div className="xray-card upload-card">
 
-            <div className="xray-main-card">
+                    <div className="section-heading">
+                        <div className="section-icon">
+                            <ScanLine size={20} />
+                        </div>
 
-
-                {/* =================================================
-                    NO FILE / UPLOAD
-                ================================================= */}
-
-                {!preview && !result && (
-
-                    <div className="upload-section">
-
-                        <label
-                            className="upload-box"
-                        >
-
-                            <div className="upload-icon">
-
-                                <Upload
-                                    size={38}
-                                />
-
-                            </div>
-
-
-                            <h2>
-                                Upload an X-Ray
-                            </h2>
-
+                        <div>
+                            <h2>Upload X-Ray Image</h2>
 
                             <p>
-                                Upload a medical X-ray image
-                                for AI-powered analysis and
-                                fracture detection.
+                                Upload an image to begin the two-stage
+                                AI analysis.
                             </p>
+                        </div>
+                    </div>
 
-
-                            <span className="upload-formats">
-                                JPG, JPEG, PNG or WEBP
-                            </span>
-
-
-                            <span className="browse-btn">
-
-                                <Upload
-                                    size={18}
-                                />
-
-                                Browse Image
-
-                            </span>
-
-
+                    {!preview ? (
+                        <div
+                            className={`upload-box ${isDragging ? "drag-active" : ""
+                                }`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            onClick={() =>
+                                fileInputRef.current?.click()
+                            }
+                            role="button"
+                            tabIndex={0}
+                            aria-label="Upload an X-ray image"
+                            onKeyDown={(event) => {
+                                if (
+                                    event.key === "Enter" ||
+                                    event.key === " "
+                                ) {
+                                    event.preventDefault();
+                                    fileInputRef.current?.click();
+                                }
+                            }}
+                        >
                             <input
+                                ref={fileInputRef}
                                 type="file"
-                                accept="image/jpeg,image/png,image/jpg,image/webp"
+                                accept="image/jpeg,image/jpg,image/png,image/webp"
                                 onChange={handleFileChange}
                                 hidden
                             />
 
-                        </label>
-
-                    </div>
-
-                )}
-
-
-                {/* =================================================
-                    IMAGE PREVIEW
-                ================================================= */}
-
-                {preview && !result && (
-
-                    <div className="preview-section">
-
-                        <div className="preview-header">
-
-                            <div>
-
-                                <span>
-                                    SELECTED IMAGE
-                                </span>
-
-                                <h3>
-                                    X-Ray Preview
-                                </h3>
-
+                            <div className="upload-icon">
+                                <Upload size={34} />
                             </div>
 
+                            <h3>
+                                {isDragging
+                                    ? "Drop your image here"
+                                    : "Drag and drop your X-ray image"}
+                            </h3>
 
-                            <button
-                                className="remove-btn"
-                                onClick={handleRemove}
-                                type="button"
-                            >
-                                <X size={20} strokeWidth={2.5} />
-                            </button>
+                            <p>
+                                Or click here to browse files
+                            </p>
 
+                            <span className="upload-formats">
+                                JPG, JPEG, PNG, WEBP
+                            </span>
 
+                            <span className="upload-size">
+                                Maximum file size: 10 MB
+                            </span>
+
+                            <span className="browse-btn">
+                                <Upload size={17} />
+                                Browse Image
+                            </span>
                         </div>
-
-
-                        <div className="preview-container">
-
-                            <img
-                                src={preview}
-                                alt="Uploaded X-ray"
-                            />
-
-
-                            {loading && (
-
-                                <div className="scan-overlay">
-
-                                    <div className="scan-line"></div>
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-
-                        <div className="file-info">
-
-                            <FileImage
-                                size={22}
-                            />
-
-                            <div>
-
-                                <strong>
-                                    {file?.name}
-                                </strong>
-
-                                <span>
-                                    {(
-                                        file.size / 1024
-                                    ).toFixed(1)} KB
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            className="analyze-btn"
-                            onClick={handleAnalyze}
-                            disabled={loading}
-                            type="button"
-                        >
-
-                            {loading ? (
-
-                                <>
-                                    <Loader2
-                                        size={20}
-                                        className="spin"
-                                    />
-
-                                    Analyzing Image...
-
-                                </>
-
-                            ) : (
-
-                                <>
-                                    <ScanLine
-                                        size={20}
-                                    />
-
-                                    Analyze X-Ray
-
-                                </>
-                            )}
-
-                        </button>
-
-
-                        {error && (
-
-                            <div className="xray-error">
-
-                                <AlertTriangle
-                                    size={20}
-                                />
-
-                                {error}
-
-                            </div>
-
-                        )}
-
-                    </div>
-
-                )}
-
-
-                {/* =================================================
-                    RESULT
-                ================================================= */}
-
-                {result && (
-
-                    <div className="result-section">
-
-
-                        {/* =================================================
-                            NOT X-RAY
-                        ================================================= */}
-
-                        {!result.is_xray ? (
-
-                            <>
-
-                                <div className="result-icon fracture">
-
-                                    <AlertTriangle
-                                        size={45}
-                                    />
-
-                                </div>
-
-
-                                <span className="result-label">
-                                    IMAGE VALIDATION
-                                </span>
-
-
-                                <h2>
-                                    Not an X-Ray
-                                </h2>
-
-
-                                <p className="result-description">
-
-                                    {result.message ||
-                                        "The uploaded image does not appear to be an X-ray image."
-                                    }
-
-                                </p>
-
-
-                                {result.xray_probability !== undefined && (
-
-                                    <div className="confidence-card">
-
-                                        <div className="confidence-top">
-
-                                            <span>
-                                                X-Ray Confidence
-                                            </span>
-
-                                            <strong>
-                                                {(
-                                                    result.xray_probability * 100
-                                                ).toFixed(2)}
-                                                %
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div className="confidence-bar">
-
-                                            <div
-                                                className="confidence-fill"
-                                                style={{
-                                                    width:
-                                                        `${ result.xray_probability * 100 }% `
-                                                }}
-                                            ></div>
-
-                                        </div>
-
+                    ) : (
+                        <div className="preview-section">
+
+                            <div className="preview-header">
+                                <div className="preview-file-info">
+                                    <FileImage size={20} />
+
+                                    <div>
+                                        <h3>{file?.name}</h3>
+
+                                        <p>
+                                            {(
+                                                file.size /
+                                                (1024 * 1024)
+                                            ).toFixed(2)} MB
+                                        </p>
                                     </div>
-
-                                )}
-
+                                </div>
 
                                 <button
-                                    className="analyze-again-btn"
-                                    onClick={handleRemove}
                                     type="button"
+                                    className="remove-file-btn"
+                                    onClick={handleRemove}
+                                    disabled={loading}
+                                    aria-label="Remove image"
                                 >
-
-                                    <Upload
-                                        size={19}
-                                    />
-
-                                    Upload Another Image
-
+                                    <X size={19} />
                                 </button>
+                            </div>
 
-                            </>
+                            {/* IMAGE PREVIEW */}
+                            <div className="preview-container">
+                                <img
+                                    src={preview}
+                                    alt="Uploaded medical image preview"
+                                />
 
-                        ) : (
+                                {/* SCANNING ANIMATION */}
+                                {loading && (
+                                    <div className="scan-overlay">
+                                        <div className="scan-grid"></div>
 
-                            /* =================================================
-                               X-RAY DETECTED
-                            ================================================= */
+                                        <div className="scan-line"></div>
 
-                            <>
+                                        <div className="scan-horizontal-glow"></div>
 
-                                <div
-                                    className={
-                                        `result - icon ${
-    result.prediction === "fractured"
-        ? "fracture"
-        : "healthy"
-} `
-                                    }
-                                >
+                                        <div className="scan-corner top-left"></div>
+                                        <div className="scan-corner top-right"></div>
+                                        <div className="scan-corner bottom-left"></div>
+                                        <div className="scan-corner bottom-right"></div>
 
-                                    {result.prediction === "fractured" ? (
+                                        <div className="scan-status">
+                                            <Activity
+                                                size={16}
+                                                className="scan-pulse"
+                                            />
 
-                                        <Bone
-                                            size={48}
-                                        />
+                                            RUNNING AI MODELS
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
-                                    ) : (
+                            {/* TWO MODEL PROCESS */}
+                            <div className="model-process">
+                                <div className="process-step">
+                                    <div className="process-number">01</div>
 
-                                        <ShieldCheck
-                                            size={48}
-                                        />
-
-                                    )}
-
+                                    <div>
+                                        <strong>X-Ray Classification</strong>
+                                        <span>
+                                            Verify whether the image is an X-ray
+                                        </span>
+                                    </div>
                                 </div>
 
+                                <div className="process-connector"></div>
 
-                                <span className="result-label">
-                                    AI ANALYSIS COMPLETE
+                                <div className="process-step">
+                                    <div className="process-number">02</div>
+
+                                    <div>
+                                        <strong>Fracture Detection</strong>
+                                        <span>
+                                            Check for possible bone fractures
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {!result && (
+                                <button
+                                    type="button"
+                                    className="analyze-btn"
+                                    onClick={handleAnalyze}
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <>
+                                            <ScanEye
+                                                size={19}
+                                                className="loading-spinner"
+                                            />
+                                            Analyzing Image...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ScanLine size={19} />
+                                            Analyze X-Ray
+                                        </>
+                                    )}
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ERROR */}
+                    {error && (
+                        <div className="xray-error">
+                            <AlertTriangle size={18} />
+                            <span>{error}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* RESULTS */}
+                {result && (
+                    <div className="xray-card result-card">
+
+                        <div className="section-heading">
+                            <div className="section-icon">
+                                <Activity size={20} />
+                            </div>
+
+                            <div>
+                                <h2>Analysis Results</h2>
+
+                                <p>
+                                    Results from your two-stage AI system.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* MODEL 1: XRAY CLASSIFICATION */}
+                        <div className="model-result-block">
+                            <div className="model-result-heading">
+                                <span className="model-step-label">
+                                    MODEL 01
                                 </span>
 
+                                <h3>X-Ray Classification</h3>
 
-                                <h2>
-                                    {result.prediction === "fractured"
-                                        ? "Fracture Detected"
-                                        : "No Fracture Detected"
-                                    }
-                                </h2>
-
-
-                                <p className="result-description">
-
-                                    {result.message ||
-                                        "X-ray image analyzed successfully."
-                                    }
-
+                                <p>
+                                    Determines whether the uploaded image
+                                    is a valid X-ray.
                                 </p>
+                            </div>
 
+                            {result.isXray === true ? (
+                                <div className="stage-status success-status">
+                                    <CheckCircle2 size={21} />
 
-                                {/* X-RAY CONFIDENCE */}
+                                    <div>
+                                        <strong>X-Ray Image Detected</strong> <br />
+                                        <span>
+                                            The first model classified
+                                            the uploaded image as an X-ray.
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : result.isXray === false ? (
+                                <div className="stage-status danger-status">
+                                    <XCircle size={21} />
 
-                                {result.xray_probability !== undefined && (
+                                    <div>
+                                        <strong>Not an X-Ray Image</strong> <br />
+                                        <span>
+                                            The first model did not recognize
+                                            this image as an X-ray.
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="stage-status warning-status">
+                                    <Info size={21} />
 
-                                    <div className="confidence-card">
+                                    <div>
+                                        <strong>Classification Unavailable</strong>
+                                        <span>
+                                            The backend did not return a
+                                            recognizable X-ray classification.
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
 
-                                        <div className="confidence-top">
+                            {result.xrayConfidence !== null && (
+                                <div className="confidence-item">
+                                    <div className="confidence-heading">
+                                        <span>X-Ray Confidence</span>
 
-                                            <span>
-                                                X-Ray Confidence
-                                            </span>
-
-                                            <strong>
-                                                {(
-                                                    result.xray_probability * 100
-                                                ).toFixed(2)}
-                                                %
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div className="confidence-bar">
-
-                                            <div
-                                                className="confidence-fill"
-                                                style={{
-                                                    width:
-                                                        `${ result.xray_probability * 100 }% `
-                                                }}
-                                            ></div>
-
-                                        </div>
-
+                                        <strong>
+                                            {formatConfidence(
+                                                result.xrayConfidence
+                                            )}
+                                        </strong>
                                     </div>
 
+                                    <div className="confidence-track">
+                                        <div
+                                            className="confidence-fill xray-fill"
+                                            style={{
+                                                width: `${getPercentage(
+                                                    result.xrayConfidence
+                                                ) ?? 0
+                                                    }%`,
+                                            }}
+                                        ></div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* MODEL 2: FRACTURE CLASSIFICATION */}
+                        {result.isXray === true && (
+                            <div className="model-result-block fracture-model-block">
+                                <div className="model-result-heading">
+                                    <span className="model-step-label">
+                                        MODEL 02
+                                    </span>
+
+                                    <h3>Bone Fracture Detection</h3>
+
+                                    <p>
+                                        Checks the X-ray image for possible
+                                        fracture patterns.
+                                    </p>
+                                </div>
+
+                                {result.isFractured === true ? (
+                                    <div className="result-message fracture-result">
+                                        <div className="result-icon fracture">
+                                            <AlertTriangle size={30} />
+                                        </div>
+
+                                        <div>
+                                            <span className="result-label">
+                                                PREDICTION
+                                            </span>
+
+                                            <h3>
+                                                Possible Fracture Detected
+                                            </h3>
+
+                                            <p>
+                                                The second model detected
+                                                patterns that may indicate
+                                                a bone fracture.
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : result.isFractured === false ? (
+                                    <div className="result-message healthy-result">
+                                        <div className="result-icon healthy">
+                                            <ShieldCheck size={30} />
+                                        </div>
+
+                                        <div>
+                                            <span className="result-label">
+                                                PREDICTION
+                                            </span>
+
+                                            <h3>No Fracture Detected</h3>
+
+                                            <p>
+                                                The second model did not detect
+                                                patterns indicating a fracture.
+                                            </p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="stage-status warning-status">
+                                        <Info size={21} />
+
+                                        <div>
+                                            <strong>
+                                                Fracture Prediction Unavailable
+                                            </strong>
+
+                                            <span>
+                                                The backend did not return a
+                                                recognizable fracture label.
+                                            </span>
+                                        </div>
+                                    </div>
                                 )}
 
-
-                                {/* FRACTURE CONFIDENCE */}
-
-                                {result.fracture_probability !== undefined && (
-
-                                    <div className="confidence-card">
-
-                                        <div className="confidence-top">
-
+                                {result.fractureConfidence !== null && (
+                                    <div className="confidence-item">
+                                        <div className="confidence-heading">
                                             <span>
                                                 Fracture Confidence
                                             </span>
 
                                             <strong>
-                                                {(
-                                                    result.fracture_probability * 100
-                                                ).toFixed(2)}
-                                                %
+                                                {formatConfidence(
+                                                    result.fractureConfidence
+                                                )}
                                             </strong>
-
                                         </div>
 
-
-                                        <div className="confidence-bar">
-
+                                        <div className="confidence-track">
                                             <div
-                                                className={
-                                                    result.prediction === "fractured"
-                                                        ? "confidence-fill fracture-fill"
-                                                        : "confidence-fill"
-                                                }
+                                                className={`confidence-fill ${result.isFractured === true
+                                                        ? "fracture-fill"
+                                                        : "healthy-fill"
+                                                    }`}
                                                 style={{
-                                                    width:
-                                                        `${ result.fracture_probability * 100 }% `
+                                                    width: `${getPercentage(
+                                                        result.fractureConfidence
+                                                    ) ?? 0
+                                                        }%`,
                                                 }}
                                             ></div>
-
                                         </div>
-
                                     </div>
-
                                 )}
-
-
-                                {/* FILE NAME */}
-
-                                <div className="result-file">
-
-                                    <FileImage
-                                        size={16}
-                                    />
-
-                                    {file?.name}
-
-                                </div>
-
-
-                                {/* DISCLAIMER */}
-
-                                <div className="medical-disclaimer">
-
-                                    <AlertTriangle
-                                        size={20}
-                                    />
-
-                                    <p>
-
-                                        This AI analysis is intended
-                                        for informational purposes only
-                                        and should not replace professional
-                                        medical diagnosis or consultation.
-
-                                    </p>
-
-                                </div>
-
-
-                                {/* ANALYZE AGAIN */}
-
-                                <button
-                                    className="analyze-again-btn"
-                                    onClick={handleRemove}
-                                    type="button"
-                                >
-
-                                    <Upload
-                                        size={19}
-                                    />
-
-                                    Analyze Another Image
-
-                                </button>
-
-                            </>
-
+                            </div>
                         )}
 
-                    </div>
+                        {/* INVALID IMAGE MESSAGE */}
+                        {result.isXray === false && (
+                            <div className="invalid-xray-notice">
+                                <AlertTriangle size={19} />
 
+                                <p>
+                                    The fracture detection model was not
+                                    used because the first model rejected
+                                    this image as an X-ray.
+                                </p>
+                            </div>
+                        )}
+
+                        {result.isXray === null && (
+                            <div className="invalid-xray-notice">
+                                <Info size={19} />
+
+                                <p>
+                                    The X-ray classification result is
+                                    missing or unrecognized. The fracture
+                                    result cannot be safely interpreted.
+                                </p>
+                            </div>
+                        )}
+
+                        {/* DISCLAIMER */}
+                        <div className="xray-disclaimer">
+                            <ShieldCheck size={18} />
+
+                            <p>
+                                <strong>Medical Disclaimer:</strong>{" "}
+                                This AI-generated result is for educational
+                                and informational purposes only. It is not
+                                a medical diagnosis. Always consult a
+                                qualified healthcare professional or
+                                radiologist.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="analyze-again-btn"
+                            onClick={handleAnalyzeAgain}
+                        >
+                            <RefreshCw size={18} />
+                            Analyze Image Again
+                        </button>
+                    </div>
                 )}
 
-            </div>
+                {/* INFORMATION CARDS */}
+                <div className="xray-info-grid">
 
-
-            {/* =================================================
-                FEATURES
-            ================================================= */}
-
-            {!result && (
-
-                <div className="xray-features">
-
-                    <div className="feature">
-
-                        <ScanLine
-                            size={22}
-                        />
-
-                        <div>
-
-                            <strong>
-                                X-Ray Validation
-                            </strong>
-
-                            <span>
-                                Filters non-X-ray images
-                            </span>
-
+                    <div className="info-card">
+                        <div className="info-icon">
+                            <Upload size={22} />
                         </div>
 
+                        <h3>Upload Image</h3>
+
+                        <p>
+                            Upload a supported medical image from your device.
+                        </p>
                     </div>
 
-
-                    <div className="feature">
-
-                        <Bone
-                            size={22}
-                        />
-
-                        <div>
-
-                            <strong>
-                                Fracture Detection
-                            </strong>
-
-                            <span>
-                                AI-powered fracture analysis
-                            </span>
-
+                    <div className="info-card">
+                        <div className="info-icon">
+                            <ScanLine size={22} />
                         </div>
 
+                        <h3>X-Ray Verification</h3>
+
+                        <p>
+                            Model 1 checks whether the uploaded image
+                            is an X-ray.
+                        </p>
                     </div>
 
-
-                    <div className="feature">
-
-                        <ShieldCheck
-                            size={22}
-                        />
-
-                        <div>
-
-                            <strong>
-                                AI Assisted
-                            </strong>
-
-                            <span>
-                                Fast automated analysis
-                            </span>
-
+                    <div className="info-card">
+                        <div className="info-icon">
+                            <Activity size={22} />
                         </div>
 
-                    </div>
+                        <h3>Fracture Detection</h3>
 
+                        <p>
+                            Model 2 checks the verified X-ray for
+                            possible bone fractures.
+                        </p>
+                    </div>
                 </div>
-
-            )}
-
+            </div>
         </div>
-
     );
-
 };
-
 
 export default XrayAnalysis;

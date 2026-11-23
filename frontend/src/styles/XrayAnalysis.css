@@ -1,53 +1,49 @@
-.xray-page {
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-    padding: 50px 6%;
-    background:
-        radial-gradient(circle at 15% 20%,
-            rgba(56, 189, 248, 0.10),
-            transparent 30%),
-        radial-gradient(circle at 85% 75%,
-            rgba(99, 102, 241, 0.10),
-            transparent 30%),
-        #070b14;
-
-    color: #f8fafc;
-}
-
-
 /* =========================================================
-   BACKGROUND GLOW
+   HEALTHSPHERE AI - X-RAY ANALYSIS
+   Premium dark medical AI interface
 ========================================================= */
 
-.xray-glow {
-    position: absolute;
-    width: 350px;
-    height: 350px;
+.xray-page {
+    --xray-cyan: #38bdf8;
+    --xray-blue: #0ea5e9;
+    --xray-indigo: #6366f1;
+    --xray-purple: #8b5cf6;
+    --xray-green: #34d399;
+    --xray-red: #fb7185;
+    --xray-yellow: #fbbf24;
 
-    border-radius: 50%;
+    --xray-text: #f8fafc;
+    --xray-muted: #94a3b8;
+    --xray-subtle: #64748b;
+    --xray-border: rgba(148, 163, 184, 0.14);
 
-    filter: blur(100px);
+    min-height: 100vh;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 55px 6% 70px;
 
-    pointer-events: none;
-
-    opacity: 0.35;
+    color: var(--xray-text);
+    background:
+        radial-gradient(ellipse at 12% 8%, rgba(14, 165, 233, 0.14), transparent 32%),
+        radial-gradient(ellipse at 90% 45%, rgba(99, 102, 241, 0.12), transparent 34%),
+        radial-gradient(ellipse at 50% 100%, rgba(45, 212, 191, 0.06), transparent 35%),
+        #070b14;
 }
 
-
-.glow-one {
-    background: #0ea5e9;
-    top: -150px;
-    left: -100px;
+.xray-page *,
+.xray-page *::before,
+.xray-page *::after {
+    box-sizing: border-box;
 }
 
-
-.glow-two {
-    background: #6366f1;
-    right: -120px;
-    bottom: -150px;
+.xray-page button {
+    font: inherit;
 }
 
+.xray-page img {
+    max-width: 100%;
+}
 
 /* =========================================================
    HEADER
@@ -55,295 +51,307 @@
 
 .xray-header {
     position: relative;
-
-    max-width: 1100px;
-
-    margin: 0 auto 35px;
+    max-width: 1120px;
+    margin: 0 auto 38px;
 
     display: flex;
-
     align-items: center;
-
     gap: 20px;
 }
 
-
-.header-icon {
-    width: 65px;
-    height: 65px;
+.xray-header-icon {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
-    border-radius: 18px;
+    border-radius: 20px;
+    color: var(--xray-cyan);
 
-    background:
-        linear-gradient(135deg,
-            rgba(56, 189, 248, 0.18),
+    background: linear-gradient(135deg,
+            rgba(56, 189, 248, 0.17),
             rgba(99, 102, 241, 0.18));
 
-    border: 1px solid rgba(148, 163, 184, 0.18);
+    border: 1px solid rgba(56, 189, 248, 0.20);
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.35);
-
-    color: #38bdf8;
+        0 15px 40px rgba(0, 0, 0, 0.30),
+        0 0 35px rgba(56, 189, 248, 0.09);
 }
-
-
-.header-label {
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-
-    color: #38bdf8;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 6px;
-}
-
 
 .xray-header h1 {
     margin: 0;
-
-    font-size: clamp(30px, 4vw, 46px);
-
+    font-size: clamp(30px, 4vw, 45px);
     font-weight: 800;
+    letter-spacing: -1.6px;
+    line-height: 1.15;
 
-    letter-spacing: -1.5px;
+    background: linear-gradient(100deg,
+            #ffffff 15%,
+            #bae6fd 55%,
+            #a5b4fc 100%);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
-
 
 .xray-header p {
-    margin: 8px 0 0;
-
-    color: #94a3b8;
-
-    font-size: 15px;
+    margin: 9px 0 0;
+    color: var(--xray-muted);
+    font-size: 14px;
+    line-height: 1.7;
 }
 
-
 /* =========================================================
-   MAIN CARD
+   MAIN CONTENT
 ========================================================= */
 
-.xray-main-card {
+.xray-content {
     position: relative;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+}
 
-    max-width: 1100px;
+.xray-card {
+    position: relative;
+    padding: 34px;
 
-    min-height: 520px;
+    border-radius: 25px;
 
-    margin: auto;
+    background: linear-gradient(145deg,
+            rgba(15, 23, 42, 0.94),
+            rgba(10, 17, 32, 0.88));
 
-    padding: 35px;
-
-    border-radius: 28px;
-
-    background:
-        linear-gradient(145deg,
-            rgba(15, 23, 42, 0.90),
-            rgba(15, 23, 42, 0.65));
-
-    border: 1px solid rgba(148, 163, 184, 0.14);
+    border: 1px solid rgba(148, 163, 184, 0.15);
 
     box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.45),
+        0 30px 80px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045);
 
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
 }
 
+.upload-card {
+    min-height: 460px;
+}
 
 /* =========================================================
-   UPLOAD
+   SECTION HEADING
 ========================================================= */
 
-.upload-section {
-    width: 100%;
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 27px;
 }
 
-
-.upload-box {
-    min-height: 430px;
+.section-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
 
     display: flex;
-
-    flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
 
+    border-radius: 14px;
+
+    color: var(--xray-cyan);
+    background: rgba(56, 189, 248, 0.10);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+}
+
+.section-heading h2 {
+    margin: 0;
+    color: #f1f5f9;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.section-heading p {
+    margin: 5px 0 0;
+    color: var(--xray-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   UPLOAD BOX
+========================================================= */
+
+.upload-box {
+    width: 100%;
+    min-height: 355px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 35px 25px;
     text-align: center;
 
-    padding: 40px;
-
-    border-radius: 22px;
-
-    border: 1px dashed rgba(56, 189, 248, 0.35);
+    border-radius: 21px;
+    border: 1.5px dashed rgba(56, 189, 248, 0.36);
 
     background:
-        rgba(15, 23, 42, 0.45);
+        radial-gradient(circle at center, rgba(56, 189, 248, 0.055), transparent 65%),
+        rgba(2, 6, 23, 0.36);
 
     cursor: pointer;
 
-    transition: 0.3s ease;
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
-
 
 .upload-box:hover {
     border-color: rgba(56, 189, 248, 0.75);
 
     background:
-        rgba(14, 165, 233, 0.05);
+        radial-gradient(circle at center, rgba(56, 189, 248, 0.09), transparent 65%),
+        rgba(2, 6, 23, 0.45);
 
     box-shadow:
-        inset 0 0 50px rgba(56, 189, 248, 0.03);
+        inset 0 0 45px rgba(56, 189, 248, 0.035),
+        0 0 28px rgba(56, 189, 248, 0.07);
 }
 
+.upload-box.drag-active {
+    border: 1.5px solid var(--xray-cyan);
+    background: rgba(56, 189, 248, 0.09);
+    transform: scale(1.008);
+
+    box-shadow:
+        0 0 0 4px rgba(56, 189, 248, 0.08),
+        0 0 35px rgba(56, 189, 248, 0.16);
+}
+
+.upload-box:focus-visible {
+    outline: 2px solid var(--xray-cyan);
+    outline-offset: 5px;
+}
 
 .upload-icon {
-    width: 80px;
-    height: 80px;
+    width: 82px;
+    height: 82px;
+    margin-bottom: 23px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
-    border-radius: 24px;
+    border-radius: 25px;
 
-    background:
-        linear-gradient(135deg,
-            rgba(56, 189, 248, 0.15),
-            rgba(99, 102, 241, 0.15));
+    color: var(--xray-cyan);
 
-    color: #38bdf8;
+    background: linear-gradient(135deg,
+            rgba(56, 189, 248, 0.17),
+            rgba(99, 102, 241, 0.17));
 
-    margin-bottom: 22px;
+    border: 1px solid rgba(56, 189, 248, 0.13);
+
+    transition: transform 0.3s ease;
 }
 
+.upload-box:hover .upload-icon {
+    transform: translateY(-5px);
+}
 
-.upload-box h2 {
-    font-size: 26px;
+.upload-box.drag-active .upload-icon {
+    transform: translateY(-7px) scale(1.07);
+    filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6));
+}
 
+.upload-box h3 {
     margin: 0 0 10px;
+    color: #f8fafc;
+    font-size: clamp(19px, 2.5vw, 24px);
+    font-weight: 750;
 }
-
 
 .upload-box p {
-    color: #94a3b8;
-
     margin: 0;
-
-    max-width: 500px;
+    color: var(--xray-muted);
+    font-size: 14px;
+    line-height: 1.7;
 }
 
-
 .upload-formats {
-    margin-top: 14px;
-
-    color: #64748b;
-
+    margin-top: 21px;
+    color: #94a3b8;
     font-size: 13px;
 }
 
-
-.browse-btn {
-    margin-top: 25px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-    padding: 13px 22px;
-
-    border: none;
-
-    border-radius: 12px;
-
-    background:
-        linear-gradient(135deg,
-            #0ea5e9,
-            #6366f1);
-
-    color: white;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 10px 30px rgba(14, 165, 233, 0.25);
-
-    transition: 0.3s ease;
+.upload-size {
+    margin-top: 8px;
+    color: var(--xray-subtle);
+    font-size: 12px;
 }
-
-
-.browse-btn:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 15px 35px rgba(14, 165, 233, 0.35);
-}
-
 
 /* =========================================================
-   PREVIEW
+   PREVIEW SECTION
 ========================================================= */
 
 .preview-section {
-    max-width: 700px;
-
-    margin: auto;
+    width: 100%;
+    max-width: 790px;
+    margin: 0 auto;
 }
-
 
 .preview-header {
     display: flex;
-
-    justify-content: space-between;
-
     align-items: center;
-
-    margin-bottom: 20px;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
 }
 
+.preview-file-info {
+    min-width: 0;
 
-.preview-header span {
-    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 
-    font-size: 11px;
-
-    letter-spacing: 2px;
-
-    font-weight: 700;
+    color: var(--xray-cyan);
 }
 
+.preview-file-info>svg {
+    flex-shrink: 0;
+}
 
-.preview-header h3 {
+.preview-file-info div {
+    min-width: 0;
+}
+
+.preview-file-info h3 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.preview-file-info p {
     margin: 5px 0 0;
-
-    font-size: 24px;
+    color: var(--xray-subtle);
+    font-size: 12px;
 }
 
-
-.remove-btn {
+.remove-file-btn {
     width: 42px;
     height: 42px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
@@ -352,158 +360,238 @@
     padding: 0;
 
     border-radius: 12px;
-    border: 1px solid rgba(248, 113, 113, 0.35);
+    border: 1px solid rgba(248, 113, 113, 0.28);
 
-    background: rgba(248, 113, 113, 0.10);
-
-    color: #ef4444;
+    background: rgba(248, 113, 113, 0.08);
+    color: #f87171;
 
     cursor: pointer;
 
     transition: all 0.25s ease;
 }
 
-.remove-btn svg {
-    display: block;
-    color: #ef4444;
-    stroke: currentColor;
-    flex-shrink: 0;
-}
-
-.remove-btn:hover {
-    background: rgba(248, 113, 113, 0.18);
+.remove-file-btn:hover:not(:disabled) {
+    background: rgba(248, 113, 113, 0.16);
     border-color: rgba(248, 113, 113, 0.55);
+    transform: translateY(-2px);
 }
 
+.remove-file-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
 /* =========================================================
-   IMAGE
+   IMAGE PREVIEW
 ========================================================= */
 
 .preview-container {
     position: relative;
+    isolation: isolate;
 
     width: 100%;
+    height: 410px;
 
-    height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     overflow: hidden;
 
     border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
 
-    background: #020617;
-
-    border: 1px solid rgba(148, 163, 184, 0.15);
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
+    background:
+        radial-gradient(circle at center, rgba(30, 41, 59, 0.6), transparent 70%),
+        #020617;
 }
-
 
 .preview-container img {
+    display: block;
     width: 100%;
     height: 100%;
-
     object-fit: contain;
 
-    filter:
-        contrast(1.08) brightness(1.05);
+    filter: contrast(1.06) brightness(1.04);
 }
 
-
 /* =========================================================
-   SCAN EFFECT
+   SCAN OVERLAY
 ========================================================= */
 
 .scan-overlay {
     position: absolute;
-
     inset: 0;
-
-    pointer-events: none;
+    z-index: 5;
 
     overflow: hidden;
+    pointer-events: none;
+
+    background: rgba(3, 12, 25, 0.12);
 }
 
+.scan-grid {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+
+    background-size: 35px 35px;
+    opacity: 0;
+
+    animation: gridReveal 2s ease-in-out infinite;
+}
+
+@keyframes gridReveal {
+
+    0%,
+    100% {
+        opacity: 0.07;
+    }
+
+    50% {
+        opacity: 0.48;
+    }
+}
 
 .scan-line {
     position: absolute;
-
-    width: 100%;
-
-    height: 2px;
-
+    left: 0;
     top: 0;
 
-    background:
-        linear-gradient(90deg,
-            transparent,
-            #38bdf8,
-            transparent);
+    width: 100%;
+    height: 3px;
+
+    background: #67e8f9;
 
     box-shadow:
-        0 0 15px #38bdf8;
+        0 0 8px #22d3ee,
+        0 0 20px #06b6d4,
+        0 0 45px rgba(34, 211, 238, 0.85);
 
-    animation:
-        scan 2.5s linear infinite;
+    animation: xrayScan 2.5s linear infinite;
 }
 
-
-@keyframes scan {
-
-    0% {
-        top: 0;
+@keyframes xrayScan {
+    from {
+        transform: translateY(0);
     }
 
-    100% {
-        top: 100%;
+    to {
+        transform: translateY(410px);
     }
-
 }
 
+.scan-horizontal-glow {
+    position: absolute;
+    left: 0;
+    top: -120px;
 
-/* =========================================================
-   FILE INFO
-========================================================= */
+    width: 100%;
+    height: 120px;
 
-.file-info {
+    background: linear-gradient(to bottom,
+            rgba(34, 211, 238, 0.20),
+            rgba(34, 211, 238, 0.055),
+            transparent);
+
+    animation: glowScan 2.5s linear infinite;
+}
+
+@keyframes glowScan {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(530px);
+    }
+}
+
+.scan-corner {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+
+    border-color: #67e8f9;
+    border-style: solid;
+
+    filter: drop-shadow(0 0 5px #22d3ee);
+}
+
+.scan-corner.top-left {
+    top: 15px;
+    left: 15px;
+    border-width: 2px 0 0 2px;
+}
+
+.scan-corner.top-right {
+    top: 15px;
+    right: 15px;
+    border-width: 2px 2px 0 0;
+}
+
+.scan-corner.bottom-left {
+    bottom: 15px;
+    left: 15px;
+    border-width: 0 0 2px 2px;
+}
+
+.scan-corner.bottom-right {
+    bottom: 15px;
+    right: 15px;
+    border-width: 0 2px 2px 0;
+}
+
+.scan-status {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+
     display: flex;
-
     align-items: center;
+    justify-content: center;
+    gap: 9px;
 
-    gap: 12px;
+    padding: 10px 18px;
 
-    padding: 14px 0;
+    color: #a5f3fc;
+    background: rgba(3, 15, 30, 0.90);
 
-    color: #94a3b8;
-}
+    border: 1px solid rgba(34, 211, 238, 0.40);
+    border-radius: 30px;
 
-
-.file-info div {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 3px;
-}
-
-
-.file-info strong {
-    color: #e2e8f0;
-
-    font-size: 14px;
-
-    word-break: break-all;
-}
-
-
-.file-info span {
     font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    white-space: nowrap;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.14);
 }
 
+.scan-pulse {
+    animation: scanPulse 1s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+
+    0%,
+    100% {
+        opacity: 0.45;
+        transform: scale(0.9);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+}
 
 /* =========================================================
    ANALYZE BUTTON
@@ -512,65 +600,60 @@
 .analyze-btn,
 .analyze-again-btn {
     width: 100%;
+    min-height: 54px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 10px;
 
-    padding: 16px;
+    margin-top: 21px;
+    padding: 15px 20px;
 
-    border: none;
-
+    border: 1px solid rgba(56, 189, 248, 0.22);
     border-radius: 14px;
 
-    background:
-        linear-gradient(135deg,
-            #0ea5e9,
-            #6366f1);
+    background: linear-gradient(110deg, #0284c7, #4f46e5 58%, #7c3aed);
 
-    color: white;
-
+    color: #ffffff;
     font-size: 15px;
-
-    font-weight: 700;
+    font-weight: 750;
 
     cursor: pointer;
 
     box-shadow:
-        0 15px 35px rgba(14, 165, 233, 0.20);
+        0 12px 30px rgba(14, 165, 233, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
-    transition: 0.3s ease;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
 }
-
 
 .analyze-btn:hover:not(:disabled),
 .analyze-again-btn:hover {
     transform: translateY(-2px);
-
-    box-shadow:
-        0 20px 40px rgba(14, 165, 233, 0.30);
+    box-shadow: 0 17px 38px rgba(14, 165, 233, 0.27);
 }
 
-
 .analyze-btn:disabled {
-    opacity: 0.7;
-
+    opacity: 0.58;
     cursor: not-allowed;
 }
 
-
-.spin {
-    animation:
-        spin 1s linear infinite;
+.analyze-btn:focus-visible,
+.analyze-again-btn:focus-visible,
+.remove-file-btn:focus-visible {
+    outline: 2px solid var(--xray-cyan);
+    outline-offset: 4px;
 }
 
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
 
 @keyframes spin {
-
     from {
         transform: rotate(0deg);
     }
@@ -578,369 +661,1008 @@
     to {
         transform: rotate(360deg);
     }
-
 }
-
 
 /* =========================================================
-   RESULT
-========================================================= */
-
-.result-section {
-    max-width: 650px;
-
-    margin: auto;
-
-    text-align: center;
-
-    padding: 25px;
-}
-
-
-.result-icon {
-    width: 95px;
-    height: 95px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 10px auto 20px;
-
-    border-radius: 28px;
-}
-
-
-.result-icon.fracture {
-    background:
-        rgba(248, 113, 113, 0.10);
-
-    color: #f87171;
-
-    border:
-        1px solid rgba(248, 113, 113, 0.25);
-
-    box-shadow:
-        0 0 50px rgba(248, 113, 113, 0.12);
-}
-
-
-.result-icon.healthy {
-    background:
-        rgba(52, 211, 153, 0.10);
-
-    color: #34d399;
-
-    border:
-        1px solid rgba(52, 211, 153, 0.25);
-
-    box-shadow:
-        0 0 50px rgba(52, 211, 153, 0.12);
-}
-
-
-.result-label {
-    color: #38bdf8;
-
-    font-size: 11px;
-
-    letter-spacing: 2px;
-
-    font-weight: 700;
-}
-
-
-.result-section h2 {
-    font-size: 40px;
-
-    margin: 10px 0;
-}
-
-
-.result-description {
-    color: #94a3b8;
-
-    max-width: 550px;
-
-    margin: auto;
-
-    line-height: 1.7;
-}
-
-
-/* =========================================================
-   CONFIDENCE
-========================================================= */
-
-.confidence-card {
-    margin-top: 30px;
-
-    padding: 20px;
-
-    border-radius: 16px;
-
-    background:
-        rgba(2, 6, 23, 0.45);
-
-    border:
-        1px solid rgba(148, 163, 184, 0.12);
-}
-
-
-.confidence-top {
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-bottom: 12px;
-
-    color: #94a3b8;
-}
-
-
-.confidence-top strong {
-    color: white;
-}
-
-
-.confidence-bar {
-    width: 100%;
-
-    height: 8px;
-
-    background: #1e293b;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-}
-
-
-.confidence-fill {
-    height: 100%;
-
-    border-radius: inherit;
-
-    background:
-        linear-gradient(90deg,
-            #10b981,
-            #34d399);
-}
-
-
-.fracture-fill {
-    background:
-        linear-gradient(90deg,
-            #f97316,
-            #ef4444);
-}
-
-
-/* =========================================================
-   RESULT FILE
-========================================================= */
-
-.result-file {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    color: #64748b;
-
-    font-size: 13px;
-
-    margin: 20px 0;
-}
-
-
-/* =========================================================
-   DISCLAIMER
-========================================================= */
-
-.medical-disclaimer {
-    display: flex;
-
-    gap: 10px;
-
-    text-align: left;
-
-    margin-top: 20px;
-
-    padding: 15px;
-
-    border-radius: 14px;
-
-    background:
-        rgba(245, 158, 11, 0.06);
-
-    border:
-        1px solid rgba(245, 158, 11, 0.15);
-
-    color: #fbbf24;
-}
-
-
-.medical-disclaimer p {
-    margin: 0;
-
-    font-size: 12px;
-
-    line-height: 1.6;
-
-    color: #94a3b8;
-}
-
-
-/* =========================================================
-   ERROR
+   ERROR MESSAGE
 ========================================================= */
 
 .xray-error {
     display: flex;
-
-    align-items: center;
-
-    gap: 10px;
+    align-items: flex-start;
+    gap: 11px;
 
     margin-top: 20px;
+    padding: 15px 18px;
 
-    padding: 14px 18px;
+    border-radius: 13px;
 
-    border-radius: 12px;
+    background: rgba(248, 113, 113, 0.075);
+    border: 1px solid rgba(248, 113, 113, 0.22);
 
-    background:
-        rgba(248, 113, 113, 0.08);
-
-    border:
-        1px solid rgba(248, 113, 113, 0.2);
-
-    color: #f87171;
-
-    font-size: 14px;
+    color: #fca5a5;
+    font-size: 13px;
+    line-height: 1.65;
 }
 
+.xray-error svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
 
 /* =========================================================
-   FEATURES
+   RESULT CARD
 ========================================================= */
 
-.xray-features {
-    max-width: 1100px;
-
-    margin: 25px auto 0;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 15px;
+.result-card {
+    width: 100%;
+    margin-top: 28px;
+    animation: resultAppear 0.5s ease both;
 }
 
+@keyframes resultAppear {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
 
-.feature {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   TWO-MODEL PROCESS
+   Compatible with the latest XrayAnalysis.jsx
+========================================================= */
+
+.model-process {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0;
+}
+
+.process-step {
+    position: relative;
+    min-width: 0;
+
     display: flex;
-
     align-items: center;
-
     gap: 13px;
 
-    padding: 18px;
+    padding: 17px;
 
     border-radius: 16px;
+    background: rgba(2, 6, 23, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.13);
 
-    background:
-        rgba(15, 23, 42, 0.55);
-
-    border:
-        1px solid rgba(148, 163, 184, 0.10);
+    transition: border-color 0.25s ease, background 0.25s ease;
 }
 
+.process-number {
+    width: 37px;
+    height: 37px;
+    flex-shrink: 0;
 
-.feature svg {
-    color: #38bdf8;
-}
-
-
-.feature div {
     display: flex;
+    align-items: center;
+    justify-content: center;
 
-    flex-direction: column;
+    border-radius: 11px;
 
-    gap: 4px;
+    color: var(--xray-cyan);
+    background: rgba(56, 189, 248, 0.11);
+    border: 1px solid rgba(56, 189, 248, 0.18);
+
+    font-size: 13px;
+    font-weight: 800;
 }
 
+.process-step>div {
+    min-width: 0;
+}
 
-.feature strong {
+.process-step h4 {
+    margin: 0 0 5px;
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.process-step p {
+    margin: 0;
+    color: var(--xray-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.process-connector {
+    display: none;
+}
+
+.stage-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 8px;
+    padding: 4px 8px;
+
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 0.3px;
+}
+
+.success-status {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, 0.10);
+    border: 1px solid rgba(16, 185, 129, 0.20);
+}
+
+.danger-status {
+    color: #fda4af;
+    background: rgba(244, 63, 94, 0.10);
+    border: 1px solid rgba(244, 63, 94, 0.20);
+}
+
+.warning-status {
+    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.10);
+    border: 1px solid rgba(245, 158, 11, 0.20);
+}
+
+/* =========================================================
+   RESULT MESSAGE
+========================================================= */
+
+.result-message {
+    display: flex;
+    align-items: center;
+    gap: 21px;
+
+    padding: 25px;
+
+    border-radius: 19px;
+    border: 1px solid transparent;
+}
+
+.result-icon {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 21px;
+}
+
+.result-icon.fracture {
+    background: rgba(248, 113, 113, 0.10);
+    color: #fb7185;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    box-shadow: 0 0 30px rgba(248, 113, 113, 0.08);
+}
+
+.result-icon.healthy {
+    background: rgba(52, 211, 153, 0.10);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.08);
+}
+
+.result-icon.warning {
+    background: rgba(251, 191, 36, 0.10);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.fracture-result {
+    background: linear-gradient(110deg, rgba(127, 29, 29, 0.16), rgba(248, 113, 113, 0.035));
+    border-color: rgba(248, 113, 113, 0.19);
+}
+
+.healthy-result {
+    background: linear-gradient(110deg, rgba(6, 78, 59, 0.17), rgba(52, 211, 153, 0.035));
+    border-color: rgba(52, 211, 153, 0.19);
+}
+
+.warning-result {
+    background: linear-gradient(110deg, rgba(120, 53, 15, 0.17), rgba(251, 191, 36, 0.035));
+    border-color: rgba(251, 191, 36, 0.19);
+}
+
+.result-message>div:last-child {
+    min-width: 0;
+}
+
+.result-label {
+    display: inline-block;
+    color: var(--xray-cyan);
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    font-weight: 800;
+}
+
+.result-message h3 {
+    margin: 8px 0;
+    color: #f8fafc;
+    font-size: clamp(19px, 2.5vw, 23px);
+    line-height: 1.35;
+    font-weight: 750;
+}
+
+.result-message p {
+    margin: 0;
+    color: var(--xray-muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   MODEL RESULT BLOCKS
+========================================================= */
+
+.model-result-block {
+    margin-top: 19px;
+    padding: 22px;
+
+    border-radius: 17px;
+
+    background: rgba(2, 6, 23, 0.40);
+    border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.model-result-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 16px;
+}
+
+.model-result-heading h3 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.model-step-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #7dd3fc;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* Invalid X-ray notice */
+
+.invalid-xray-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-top: 19px;
+    padding: 18px;
+
+    border-radius: 15px;
+
+    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.19);
+}
+
+.invalid-xray-notice svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.invalid-xray-notice h3 {
+    margin: 0 0 5px;
+    color: #fde68a;
     font-size: 14px;
 }
 
+.invalid-xray-notice p {
+    margin: 0;
+    color: var(--xray-muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
 
-.feature span {
-    color: #64748b;
+/* =========================================================
+   CONFIDENCE SCORES
+========================================================= */
 
+.confidence-section {
+    margin-top: 22px;
+    padding: 24px;
+
+    border-radius: 18px;
+
+    background: rgba(2, 6, 23, 0.42);
+    border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.confidence-section h3 {
+    margin: 0 0 23px;
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.confidence-item+.confidence-item {
+    margin-top: 23px;
+}
+
+.confidence-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 10px;
+
+    color: var(--xray-muted);
     font-size: 12px;
 }
 
+.confidence-heading strong {
+    color: #f8fafc;
+    font-size: 13px;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+}
+
+.confidence-track {
+    width: 100%;
+    height: 9px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+    background: #1e293b;
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.8s ease;
+}
+
+.xray-fill {
+    background: linear-gradient(90deg, #0284c7, #38bdf8);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.22);
+}
+
+.fracture-fill {
+    background: linear-gradient(90deg, #f97316, #fb7185);
+}
+
+.healthy-fill {
+    background: linear-gradient(90deg, #059669, #34d399);
+}
 
 /* =========================================================
-   RESPONSIVE
+   MEDICAL DISCLAIMER
 ========================================================= */
 
-@media (max-width: 768px) {
+.xray-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
 
+    margin-top: 22px;
+    padding: 17px;
+
+    border-radius: 14px;
+
+    background: rgba(245, 158, 11, 0.055);
+    border: 1px solid rgba(245, 158, 11, 0.17);
+
+    color: #fbbf24;
+}
+
+.xray-disclaimer svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.xray-disclaimer p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.xray-disclaimer strong {
+    color: #fbbf24;
+}
+
+/* =========================================================
+   ANALYZE AGAIN BUTTON
+========================================================= */
+
+.analyze-again-btn {
+    background: rgba(56, 189, 248, 0.075);
+    border: 1px solid rgba(56, 189, 248, 0.23);
+    color: var(--xray-cyan);
+    box-shadow: none;
+}
+
+.analyze-again-btn:hover {
+    background: rgba(56, 189, 248, 0.13);
+    box-shadow: 0 10px 30px rgba(56, 189, 248, 0.10);
+}
+
+/* =========================================================
+   INFORMATION CARDS
+========================================================= */
+
+.xray-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+
+    margin-top: 25px;
+}
+
+.info-card {
+    min-width: 0;
+    padding: 23px;
+
+    border-radius: 18px;
+
+    background: rgba(15, 23, 42, 0.66);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(56, 189, 248, 0.26);
+    background: rgba(15, 23, 42, 0.88);
+}
+
+.info-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 16px;
+
+    border-radius: 13px;
+
+    background: rgba(56, 189, 248, 0.10);
+    color: var(--xray-cyan);
+}
+
+.info-card h3 {
+    margin: 0 0 8px;
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.info-card p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   TABLET RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
     .xray-page {
-        padding: 30px 18px;
+        padding: 42px 4% 55px;
     }
 
-
-    .xray-header {
-        align-items: flex-start;
+    .xray-card {
+        padding: 27px;
     }
-
-
-    .header-icon {
-        width: 52px;
-        height: 52px;
-    }
-
-
-    .xray-header h1 {
-        font-size: 32px;
-    }
-
-
-    .xray-main-card {
-        padding: 18px;
-
-        border-radius: 20px;
-    }
-
-
-    .upload-box {
-        min-height: 380px;
-
-        padding: 25px;
-    }
-
 
     .preview-container {
-        height: 280px;
+        height: 360px;
     }
 
+    .xray-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-    .xray-features {
+    .info-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+@media (max-width: 600px) {
+    .xray-page {
+        padding: 26px 15px 40px;
+    }
+
+    .xray-header {
+        gap: 13px;
+        margin-bottom: 26px;
+    }
+
+    .xray-header-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+    }
+
+    .xray-header-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    .xray-header h1 {
+        font-size: clamp(24px, 7vw, 31px);
+        letter-spacing: -0.8px;
+    }
+
+    .xray-header p {
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .xray-card {
+        padding: 18px;
+        border-radius: 19px;
+    }
+
+    .upload-card {
+        min-height: auto;
+    }
+
+    .section-heading {
+        gap: 11px;
+        margin-bottom: 20px;
+    }
+
+    .section-icon {
+        width: 39px;
+        height: 39px;
+        border-radius: 11px;
+    }
+
+    .section-heading h2 {
+        font-size: 16px;
+    }
+
+    .section-heading p {
+        font-size: 12px;
+    }
+
+    .upload-box {
+        min-height: 285px;
+        padding: 24px 14px;
+        border-radius: 17px;
+    }
+
+    .upload-icon {
+        width: 65px;
+        height: 65px;
+        margin-bottom: 17px;
+        border-radius: 19px;
+    }
+
+    .upload-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .upload-box h3 {
+        font-size: 18px;
+        line-height: 1.4;
+    }
+
+    .upload-box p {
+        font-size: 12px;
+    }
+
+    .upload-formats {
+        margin-top: 16px;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .upload-size {
+        font-size: 11px;
+    }
+
+    .preview-section {
+        width: 100%;
+    }
+
+    .preview-header {
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .preview-file-info {
+        gap: 9px;
+    }
+
+    .preview-file-info h3 {
+        font-size: 12px;
+    }
+
+    .preview-file-info p {
+        font-size: 11px;
+    }
+
+    .remove-file-btn {
+        width: 37px;
+        height: 37px;
+        border-radius: 10px;
+    }
+
+    .preview-container {
+        height: 275px;
+        border-radius: 15px;
+    }
+
+    .scan-grid {
+        background-size: 25px 25px;
+    }
+
+    .scan-line {
+        animation-name: xrayScanMobile;
+    }
+
+    @keyframes xrayScanMobile {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(275px);
+        }
+    }
+
+    .scan-horizontal-glow {
+        animation-name: glowScanMobile;
+    }
+
+    @keyframes glowScanMobile {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(395px);
+        }
+    }
+
+    .scan-corner {
+        width: 19px;
+        height: 19px;
+    }
+
+    .scan-corner.top-left {
+        top: 10px;
+        left: 10px;
+    }
+
+    .scan-corner.top-right {
+        top: 10px;
+        right: 10px;
+    }
+
+    .scan-corner.bottom-left {
+        bottom: 10px;
+        left: 10px;
+    }
+
+    .scan-corner.bottom-right {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .scan-status {
+        bottom: 15px;
+        gap: 7px;
+        padding: 8px 13px;
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .analyze-btn,
+    .analyze-again-btn {
+        min-height: 48px;
+        margin-top: 15px;
+        padding: 13px 15px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    .result-card {
+        margin-top: 19px;
+    }
+
+    .model-process {
         grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 17px 0;
     }
 
-
-    .result-section h2 {
-        font-size: 32px;
+    .process-step {
+        padding: 14px;
+        border-radius: 13px;
     }
 
+    .process-number {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+    }
+
+    .process-step h4 {
+        font-size: 12px;
+    }
+
+    .process-step p {
+        font-size: 11px;
+    }
+
+    .result-message {
+        align-items: flex-start;
+        gap: 13px;
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+    .result-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+    }
+
+    .result-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    .result-message h3 {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    .result-message p {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .result-label {
+        font-size: 9px;
+        letter-spacing: 1.3px;
+    }
+
+    .model-result-block {
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .model-result-heading h3 {
+        font-size: 13px;
+    }
+
+    .model-step-label {
+        font-size: 9px;
+    }
+
+    .invalid-xray-notice {
+        gap: 9px;
+        padding: 13px;
+        border-radius: 12px;
+    }
+
+    .invalid-xray-notice h3 {
+        font-size: 13px;
+    }
+
+    .invalid-xray-notice p {
+        font-size: 11px;
+    }
+
+    .confidence-section {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .confidence-section h3 {
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+
+    .confidence-heading {
+        font-size: 11px;
+    }
+
+    .confidence-heading strong {
+        font-size: 12px;
+    }
+
+    .confidence-track {
+        height: 7px;
+    }
+
+    .xray-disclaimer {
+        gap: 9px;
+        margin-top: 17px;
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .xray-disclaimer svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .xray-disclaimer p {
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .xray-info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 19px;
+    }
+
+    .info-card,
+    .info-card:last-child {
+        grid-column: auto;
+
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .info-icon {
+        width: 39px;
+        height: 39px;
+        flex-shrink: 0;
+        margin: 0;
+        border-radius: 11px;
+    }
+
+    .info-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .info-card h3 {
+        margin: 1px 0 5px;
+        font-size: 13px;
+    }
+
+    .info-card p {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .xray-error {
+        gap: 8px;
+        padding: 12px;
+        font-size: 12px;
+    }
+}
+
+/* =========================================================
+   EXTRA SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+    .xray-page {
+        padding: 20px 11px 30px;
+    }
+
+    .xray-card {
+        padding: 14px;
+    }
+
+    .xray-header {
+        gap: 10px;
+    }
+
+    .xray-header-icon {
+        width: 43px;
+        height: 43px;
+    }
+
+    .xray-header h1 {
+        font-size: 23px;
+    }
+
+    .xray-header p {
+        font-size: 11px;
+    }
+
+    .upload-box {
+        min-height: 255px;
+        padding: 20px 12px;
+    }
+
+    .upload-box h3 {
+        font-size: 16px;
+    }
+
+    .preview-container {
+        height: 230px;
+    }
+
+    .result-message {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .result-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .result-message h3 {
+        font-size: 14px;
+    }
+
+    .scan-status {
+        font-size: 9px;
+        padding: 7px 10px;
+    }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .xray-page *,
+    .xray-page *::before,
+    .xray-page *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .scan-line {
+        top: 50%;
+        transform: none;
+    }
+
+    .scan-horizontal-glow {
+        display: none;
+    }
 }

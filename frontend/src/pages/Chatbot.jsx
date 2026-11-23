@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Send,
@@ -9,21 +9,37 @@ import {
     User,
     Mic,
     MessageSquare,
-    Volume2,
+    BotMessageSquare,
+    Webhook,
     Activity,
+    ScanFace,
     PhoneOff,
-    LoaderCircle,
+    FaceSlightlySmiling,
+    Loader,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 import pcmProcessorUrl from "../services/pcm-processor.js?url";
 import "../styles/chatbot.css";
 
-const API_URL = (
-    import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
-).replace(/\/+$/, "");
 
-const VOICE_URL = `${API_URL.replace(/^http:/, "ws:").replace(/^https:/, "wss:")}/chatbot/voice`;
+
+// --------------------------------------------------
+// API AND WEBSOCKET CONFIGURATION
+// Supports localhost and Render deployment.
+// --------------------------------------------------
+
+const API_URL = (
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? "http://127.0.0.1:8000" : "")
+).trim().replace(/\/+$/, "");
+
+// Convert HTTP/HTTPS into WS/WSS automatically.
+const VOICE_URL = API_URL
+    ? `${API_URL.replace(/^https:/i, "wss:").replace(/^http:/i, "ws:")}/chatbot/voice`
+    : "";
+
+
 
 const INITIAL_MESSAGE = {
     id: "welcome-message",
@@ -138,10 +154,14 @@ function Chatbot() {
         responseIdRef.current = responseId;
 
         try {
-            const response = await axios.post(
-                `${API_URL}/chatbot/chat`,
-                { message: question },
-                { timeout: 120000 }
+            const response = await api.post(
+                "/chatbot/chat",
+                {
+                    message: question
+                },
+                {
+                    timeout: 120000
+                }
             );
 
             const reply = response.data?.reply?.trim();
@@ -435,8 +455,17 @@ function Chatbot() {
     // --------------------------------------------------
 
     const startVoice = async () => {
+        
         if (voiceStateRef.current !== "idle") {
             await stopVoice();
+            return;
+        }
+
+        if (!API_URL || !VOICE_URL) {
+            setVoiceError(
+                "Backend URL is not configured. Please check VITE_API_URL."
+            );
+            updateVoiceState("error");
             return;
         }
 
@@ -873,13 +902,13 @@ function Chatbot() {
                                     }}
                                 >
                                     {voiceState === "connecting" ? (
-                                        <LoaderCircle className="voice-spinner" />
+                                        <Loader className="voice-spinner" />
                                     ) : voiceState === "speaking" ? (
-                                        <Volume2 size={34} />
+                                        <BotMessageSquare size={34} />
                                     ) : voiceState === "listening" ? (
-                                        <Activity size={34} />
+                                        <Mic size={34} />
                                     ) : (
-                                        <Bot size={34} />
+                                        <FaceSlightlySmiling size={34} />
                                     )}
                                 </motion.div>
                             </div>
@@ -919,7 +948,7 @@ function Chatbot() {
                                         }
                                     >
                                         {voiceState === "connecting" ? (
-                                            <LoaderCircle
+                                            <Webhook
                                                 className="voice-spinner"
                                                 size={18}
                                             />

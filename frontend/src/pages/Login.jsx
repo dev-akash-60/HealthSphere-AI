@@ -1,147 +1,141 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
+import { loginUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 import "../styles/auth.css";
-
 import TransitionOverlay from "../components/TransitionOverlay";
 
-
 function Login() {
-
-
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
 
-
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError("");
 
+        if (!email.trim() || !password) {
+            setError("Please enter your email and password.");
+            return;
+        }
 
-    const handleLogin = () => {
+        try {
+            setLoading(true);
 
-        // Later replace this with backend authentication
+            await loginUser(email.trim(), password);
 
-        localStorage.setItem("isLoggedIn", "true");
+            setTimeout(() => {
+                navigate("/dashboard", { replace: true });
+            }, 850);
 
+        } catch (err) {
+            setLoading(false);
 
-        setLoading(true);
+            const errorMessages = {
+                "auth/invalid-email": "Please enter a valid email address.",
+                "auth/invalid-credential": "Incorrect email or password.",
+                "auth/user-not-found": "No account found with this email.",
+                "auth/wrong-password": "Incorrect password.",
+                "auth/too-many-requests": "Too many attempts. Try again later.",
+                "auth/network-request-failed": "Network error. Check your connection."
+            };
 
-
-        setTimeout(() => {
-
-            navigate("/dashboard");
-
-        }, 850);
-
+            setError(
+                errorMessages[err.code] ||
+                "Unable to login. Please try again."
+            );
+        }
     };
 
-
-
-    const switchRegister = () => {
-
-
-        setLoading(true);
-
-
-        setTimeout(() => {
-
-            navigate("/register");
-
-        }, 850);
-
-    };
-
-
+    if (isAuthenticated) {
+        navigate("/dashboard", { replace: true });
+        return null;
+    }
 
     return (
-
         <div className="auth-page">
-
 
             <TransitionOverlay show={loading} />
 
-
-
             <div className="cyber-card">
-
 
                 <div className="glow-border"></div>
 
-
-
                 <div className="auth-content">
 
-
-                    <h1>
-                        Welcome Back
-                    </h1>
-
-
+                    <h1>Welcome Back</h1>
 
                     <p className="subtitle">
                         Login to HealthSphere AI
                     </p>
 
+                    <form onSubmit={handleLogin}>
 
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="email"
+                            required
+                        />
 
+                        <div className="password-wrapper">
 
-                    <input
-                        type="email"
-                        placeholder="Email Address"
-                    />
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
+                                required
+                            />
 
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
 
+                        </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                    />
-
-
-
-                    <button
-                        className="auth-btn"
-                        onClick={handleLogin}
-                    >
-
-                        Login
-
-                    </button>
-
-
-
-
-                    <p className="switch-text">
-
-
-                        Don't have an account?
-
-
+                        {error && (
+                            <p className="auth-error">{error}</p>
+                        )}
 
                         <button
-                            className="link-button"
-                            onClick={switchRegister}
+                            type="submit"
+                            className="auth-btn"
+                            disabled={loading}
                         >
-
-                            Register
-
+                            {loading ? "Logging in..." : "Login"}
                         </button>
 
+                    </form>
 
+                    <p className="switch-text">
+                        Don't have an account?
+
+                        <Link to="/register" className="link-button">
+                            Register
+                        </Link>
                     </p>
-
-
 
                 </div>
 
-
             </div>
 
-
         </div>
-
     );
-
 }
-
 
 export default Login;

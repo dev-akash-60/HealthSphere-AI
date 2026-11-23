@@ -135,9 +135,9 @@ function LandingPage() {
                                 delay: 1,
                             }}
                         >
-                            <span>✓ AI-Assisted</span>
-                            <span>✓ Multiple AI Models</span>
-                            <span>✓ Personalised Insights</span>
+                            <span>✓ AI-Assisted </span>
+                            <span>✓ Multiple AI Models </span>
+                            <span>✓ Personalised Insights </span>
                         </motion.div>
 
                     </div>
@@ -173,7 +173,7 @@ function LandingPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h3>06+</h3>
+                        <h3>6+</h3>
                         <p>AI Healthcare Modules</p>
                     </motion.div>
 
@@ -184,7 +184,7 @@ function LandingPage() {
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
                     >
-                        <h3>01</h3>
+                        <h3>1</h3>
                         <p>Unified Healthcare Platform</p>
                     </motion.div>
 
@@ -235,7 +235,6 @@ function LandingPage() {
                     >
 
                         <p>AI-POWERED HEALTHCARE</p>
-
                         <h2>
                             One Platform.
                             <br />

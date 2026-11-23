@@ -31,10 +31,6 @@ export default function SymptomPrediction() {
         location.state?.symptoms || [];
 
 
-    console.log(
-        "Prediction page result:",
-        result
-    );
 
 
     if (!result) {

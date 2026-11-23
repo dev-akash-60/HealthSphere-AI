@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Check, Loader2 } from "lucide-react";
+import { Search, Check, Loader2, Activity } from "lucide-react";
 import { predictDisease } from "../services/predictionService";
 import "../styles/symptoms.css";
 
@@ -122,7 +122,6 @@ const symptomsList = [
     "stomach_bleeding",
     "distention_of_abdomen",
     "history_of_alcohol_consumption",
-    "fluid_overload",
     "blood_in_sputum",
     "prominent_veins_on_calf",
     "palpitations",
@@ -346,9 +345,9 @@ export default function Symptoms() {
 
                     {loading ? (
                         <>
-                            <Loader2
-                                size={20}
-                                className="spin"
+                            <Activity size={20} 
+                                
+                                className="activity-icon"
                             />
 
                             Predicting...

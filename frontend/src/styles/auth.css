@@ -628,3 +628,40 @@
         left: -40%;
     }
 }
+.auth-error {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #38bdf8;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.auth-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.link-button {
+    margin-left: 5px;
+}
